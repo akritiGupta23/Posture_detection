@@ -10,7 +10,6 @@ import tempfile
 import os
 from PIL import Image
 import numpy as np
-import tensorflow as tf
 import torch
 import torchvision
 from torchvision.models.detection import KeypointRCNN
@@ -62,28 +61,6 @@ class PoseNet(nn.Module):
         x = self.backbone(x)
         x = self.decoder(x)
         return x
-
-class BlazePoseInference:
-    def __init__(self, model_path, image_size=256, num_keypoints=17):
-        self.model = tf.keras.models.load_model(model_path)
-        self.image_size = image_size
-        self.num_keypoints = num_keypoints
-
-    def load_and_preprocess(self, image_path_or_array):
-        if isinstance(image_path_or_array, str):
-            img = cv2.imread(image_path_or_array)
-        else:
-            img = image_path_or_array
-        
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        img = cv2.resize(img, (self.image_size, self.image_size))
-        img = img.astype(np.float32) / 255.0
-        return img
-
-    def predict_keypoints(self, img):
-        preprocessed = self.load_and_preprocess(img)
-        preds = self.model.predict(tf.expand_dims(preprocessed, 0))[0]
-        return np.clip(preds, 0, 1), preprocessed
 
 model2="CNN"
 def detect_keypoints(model, image_path, device='cuda'):
