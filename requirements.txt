@@ -1,6 +1,6 @@
 streamlit
 torch==2.6.0
-torchvision==0.16.0
+torchvision==0.21.0
 Pillow
 opencv-python
 matplotlib
